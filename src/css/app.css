@@ -1,0 +1,27 @@
+/* Background Color: rgb(224,220,218)
+Font Color: rgb(36, 40, 49(
+Accent Color: rgb(17, 132, 154)
+Secondary Accent Color: rgb(15, 72, 76)*/
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: rgb(36, 40, 49);
+    text-align: center;
+    background: rgb(224, 220, 218);
+}
+
+a {
+    color: rgb(17, 132, 154);
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(15, 72, 76);
+    text-decoration: underline;
+}
+
+a:visited {
+    color: rgb(17, 132, 154);
+    text-decoration: none;
+}

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	resty "gopkg.in/resty.v1"
@@ -24,10 +25,6 @@ type Location struct {
 
 var results []Result
 
-// func Home(w http.ResponseWriter, req *http.Request) {
-// 	w.Write([]byte("Hello There"))
-// }
-
 func Results(w http.ResponseWriter, req *http.Request) {
 	resp, err := resty.R().
 		SetQueryParams(map[string]string{
@@ -41,27 +38,21 @@ func Results(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	router := mux.NewRouter()
-	templates := populateTemplates()
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		requestedFile := r.URL.Path[1:]
-		t := templates.Lookup(requestedFile + ".html")
-		if t != nil {
-			err := t.Execute(w, nil)
-			if err != nil {
-				log.Println(err)
-			}
-		} else {
-			w.WriteHeader(http.StatusNotFound)
-		}
-	})
-	router.HandleFunc("/results", Results).Methods("GET")
-	http.ListenAndServe(":8000", router)
-}
+	var dir string
 
-func populateTemplates() *template.Template {
-	result := template.New("templates")
-	const basePath = "templates"
-	template.Must(result.ParseGlob(basePath + "/*.html"))
-	return result
+	flag.StringVar(&dir, "dir", ".", "project")
+	flag.Parse()
+	router := mux.NewRouter()
+
+	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(dir))))
+
+	srv := &http.Server{
+		Handler:      router,
+		Addr:         "localhost:8000",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	router.HandleFunc("/results.html", Results).Methods("GET")
+	log.Fatal(srv.ListenAndServe())
 }
