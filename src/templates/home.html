@@ -8,6 +8,11 @@
         {{template "_header.html"}}
         <p>This is the home page</p>
 
+        <form action="/results" method="GET">
+            <input type="text" name="q"/>
+            <input type="submit"/>
+        </form>
+
         {{template "_footer.html"}}
     </body>
 </html>

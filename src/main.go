@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	resty "gopkg.in/resty.v1"
@@ -29,12 +30,12 @@ var results []Result
 
 func Results(w http.ResponseWriter, req *http.Request) {
 	resp, err := resty.R().
-		// SetQueryParams(map[string]string{
-		// 	"term": "search_term",
-		// }).
+		SetQueryParams(map[string]string{
+			"term": req.URL.Query().Get("q"),
+		}).
 		SetHeader("Accept", "application/json").
-		SetAuthToken("P7F18tP3Ulmsh3ZFIv1FyVYygMoBp1b1ZoqjsnIWOkMPL0osxc").
-		Get("https://utelly-tv-shows-and-movies-availability-v1.p.mashape.com/lookup?country=us&term=bojack")
+		SetHeader("X-Mashape-Key", os.Getenv("APIKEY")).
+		Get("https://utelly-tv-shows-and-movies-availability-v1.p.mashape.com/lookup?country=us&term={term}")
 
 	fmt.Println(resp, err)
 }
@@ -42,7 +43,7 @@ func Results(w http.ResponseWriter, req *http.Request) {
 func main() {
 	router := mux.NewRouter()
 	templates := populateTemplates()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		requestedFile := r.URL.Path[1:]
 		t := templates.Lookup(requestedFile + ".html")
 		if t != nil {

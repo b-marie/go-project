@@ -18,12 +18,12 @@ References
 * [Consuming JSON APIs with Go](https://medium.com/@IndianGuru/consuming-json-apis-with-go-d711efc1dcf9)
 * [Building a RESTful API with Golang](https://www.codementor.io/codehakase/building-a-restful-api-with-golang-a6yivzqdo)
 ### Learning Go
-* Pluralsight
-..* [Creating Web Applications with Go](https://app.pluralsight.com/library/courses/creating-web-applications-go-update/table-of-contents)
-..* [Code School: On Track with Golang](https://app.pluralsight.com/library/courses/code-school-on-track-with-golang/table-of-contents)
-..* [Go: Getting Started](https://app.pluralsight.com/library/courses/go-getting-started/table-of-contents)
-* YouTube Tutorial
-..* [Create A Simple RESTful API With Golang](https://www.youtube.com/watch?v=t96hBT53S4U)
+##### Pluralsight
+* [Creating Web Applications with Go](https://app.pluralsight.com/library/courses/creating-web-applications-go-update/table-of-contents)
+* [Code School: On Track with Golang](https://app.pluralsight.com/library/courses/code-school-on-track-with-golang/table-of-contents)
+* [Go: Getting Started](https://app.pluralsight.com/library/courses/go-getting-started/table-of-contents)
+##### YouTube Tutorials
+* [Create A Simple RESTful API With Golang](https://www.youtube.com/watch?v=t96hBT53S4U)
 
 
 Future Iterations
