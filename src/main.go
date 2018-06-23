@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 
@@ -29,14 +29,34 @@ type APIResponse struct {
 	Results []Result `json:"results"`
 }
 
+type appError struct {
+	Error   error
+	Message string
+	Code    int
+}
+
+type appHandler func(http.ResponseWriter, *http.Request) *appError
+
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	//Render home page template
 	tmpl := template.Must(template.ParseFiles("home.html"))
+
+	//Pass in data for home page
 	data := HomeModel{Title: "What do you want to watch?"}
-	tmpl.Execute(w, data)
+
+	//Home page error handling
+	err := tmpl.Execute(w, data)
+	if err != nil {
+		log.Fatalf("execution failed: %s", err)
+	}
+
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	//Render results page template
 	tmpl := template.Must(template.ParseFiles("results.html"))
+
+	//Use resty to query Utelly API
 	resp, err := resty.R().
 		SetQueryParams(map[string]string{
 			"term": r.URL.Query().Get("q"),
@@ -45,17 +65,18 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		SetHeader("X-Mashape-Key", os.Getenv("APIKEY")).
 		Get("https://utelly-tv-shows-and-movies-availability-v1.p.mashape.com/lookup?country=us&term={term}")
 
+	//Build API response
 	var apiResponse APIResponse
+
 	err = json.Unmarshal(resp.Body(), &apiResponse)
 	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(len(apiResponse.Results))
-	for _, element := range apiResponse.Results {
-		fmt.Println(element.Name)
+		log.Fatalf("execution failed: %s", err)
 	}
 
-	tmpl.Execute(w, apiResponse)
+	e := tmpl.Execute(w, apiResponse)
+	if e != nil {
+		log.Fatalf("execution failed: %s", e)
+	}
 }
 
 func main() {
