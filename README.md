@@ -8,6 +8,14 @@ The purpose of this project was to make something using Go and the Go-Resty clie
 
 This project presents a simple search function, that allows you to search for a movie or TV show. It then calls the Utelly API which searches several streaming media pages, and returns a result of where you can watch that show. 
 
+The Project
+======
+This is a simple two-page Go application that allows you to enter a search query on the main page, which then queries the [Utelly](link) API to find movies or tv shows that match that query, and displays which shows were found and where those movies or tv shows can be streamed online.
+
+![screenshot of home page](src/homepage.png "Home Page")
+
+![screenshot of results page](src/resultspage.png "Results Page")
+
 
 References
 ======
