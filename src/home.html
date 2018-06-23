@@ -2,13 +2,13 @@
 <html>
     <head>
         <title>Where to Watch?</title>
-        <link href="/css/app.css" rel="stylesheet"/>
+        <link href="/src/project/src/css/app.css" rel="stylesheet"/>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     </head>
     <body>
-        <h1>What do you want to Watch?</h1>
+        <h1>{{.Title}}</h1>
 
-        <form action="/results.html" method="GET">
+        <form action="/results" method="GET">
             <input type="text" name="q"/>
             <input type="submit"/>
         </form>

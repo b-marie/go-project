@@ -1,58 +1,65 @@
 package main
 
 import (
-	"flag"
+	"encoding/json"
 	"fmt"
-	"log"
+	"html/template"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/gorilla/mux"
 	resty "gopkg.in/resty.v1"
 )
 
+type HomeModel struct {
+	Title string
+}
+
 type Result struct {
-	Name     string    `json:"name,omitempty"`
-	Picture  string    `json:"picture,omitempty"`
-	Location *Location `json:"locations,omitempty"`
+	Name     string     `json:"name"`
+	Picture  string     `json:"picture"`
+	Location []Location `json:"locations"`
 }
 
 type Location struct {
-	LocationName string `json:"name,omitempty"`
-	URL          string `json:"url,omitempty"`
+	LocationName string `json:"name"`
+	URL          string `json:"url"`
 }
 
-var results []Result
+type APIResponse struct {
+	Results []Result `json:"results"`
+}
 
-func Results(w http.ResponseWriter, req *http.Request) {
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("home.html"))
+	data := HomeModel{Title: "Where to Watch"}
+	tmpl.Execute(w, data)
+}
+
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("results.html"))
 	resp, err := resty.R().
 		SetQueryParams(map[string]string{
-			"term": req.URL.Query().Get("q"),
+			"term": r.URL.Query().Get("q"),
 		}).
 		SetHeader("Accept", "application/json").
 		SetHeader("X-Mashape-Key", os.Getenv("APIKEY")).
 		Get("https://utelly-tv-shows-and-movies-availability-v1.p.mashape.com/lookup?country=us&term={term}")
 
-	fmt.Println(resp, err)
+	var apiResponse APIResponse
+	err = json.Unmarshal(resp.Body(), &apiResponse)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(len(apiResponse.Results))
+	for _, element := range apiResponse.Results {
+		fmt.Println(element.Name)
+	}
+
+	tmpl.Execute(w, apiResponse)
 }
 
 func main() {
-	var dir string
-
-	flag.StringVar(&dir, "dir", ".", "project")
-	flag.Parse()
-	router := mux.NewRouter()
-
-	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(dir))))
-
-	srv := &http.Server{
-		Handler:      router,
-		Addr:         "localhost:8000",
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
-	router.HandleFunc("/results.html", Results).Methods("GET")
-	log.Fatal(srv.ListenAndServe())
+	http.HandleFunc("/", HomeHandler)
+	http.HandleFunc("/results", SearchHandler)
+	http.ListenAndServe(":8000", nil)
 }

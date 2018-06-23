@@ -2,12 +2,22 @@
 <html>
     <head>
         <title>Where to Watch?</title>
-        <link href="/css/app.css" rel="stylesheet"/>
+        <link href="/src/project/src/css/app.css" rel="stylesheet"/>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     </head>
     <body>
-        <p>Results</p>
-    
-
+        <h1>Results</h1>
+        <ul>
+            {{range .Results}}
+                <li>{{.Name}}</li>
+                <li><img src={{.Picture}}/></li>
+                <ul>
+                {{range .Location}}
+                    <a href={{.URL}}><button>{{.LocationName}}</button></a>
+                {{end}}
+                </ul>
+            {{end}}
+        </ul>
+        
     </body>
 </html>
