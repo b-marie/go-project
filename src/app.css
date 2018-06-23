@@ -25,3 +25,13 @@ a:visited {
     color: rgb(17, 132, 154);
     text-decoration: none;
 }
+
+ul {
+    list-style-type: none;
+}
+
+img {
+    width: 300px;
+    height: auto;
+    border: 3px solid black;
+}

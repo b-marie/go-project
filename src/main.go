@@ -31,7 +31,7 @@ type APIResponse struct {
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("home.html"))
-	data := HomeModel{Title: "Where to Watch"}
+	data := HomeModel{Title: "What do you want to watch?"}
 	tmpl.Execute(w, data)
 }
 
